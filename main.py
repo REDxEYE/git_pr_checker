@@ -3,6 +3,8 @@ from pprint import pprint
 
 from flask import Flask, request, jsonify
 
+from requests import get
+
 app = Flask(__name__)
 app.notifications = {}
 
@@ -10,7 +12,14 @@ app.notifications = {}
 @app.route('/git_hook', methods=['POST'])
 def git_hook():
     hook_data = request.get_json()
-    pprint(hook_data)
+    if 'pusher' in hook_data:
+        #Push handler
+        repo_info = hook_data['repository']
+        diff_url = repo_info['compare_url'].format(base=hook_data['before'],
+                                                   head=hook_data['after'])
+        diff_info = get(diff_url).json()
+        pprint(diff_info)
+    # pprint(hook_data)
     return 'ok'
 
 
