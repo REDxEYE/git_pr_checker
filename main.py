@@ -78,7 +78,7 @@ def git_hook():
                     comments_per_line[line_n] = comments
             for line_n, comments in comments_per_line.items():
                 comment = '\n'.join(comments)
-                _comment_on_line(hook_data['owner']['name'],
+                _comment_on_line(repo_info['owner']['name'],
                                  repo_info['name'],
                                  hook_data['after'],
                                  line_n,
