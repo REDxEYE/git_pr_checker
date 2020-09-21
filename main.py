@@ -42,8 +42,7 @@ def _comment_on_line(user, repo, commit_sha, line_n, filename, message):
         GIT_COMMENT_URL.format(owner=user, repo=repo, commit_sha=commit_sha),
         headers=header, json={
             "body": message,
-            "path": filename,
-            "position": line_n
+            "path": filename
         })
     app.logger.info('Writing comment on git commit (%s)', commit_sha)
     app.logger.info(str(res.json()))
@@ -76,7 +75,7 @@ def git_hook():
                     print(f'{checker.filename}:{line_n}'
                           f' {code} : {text}')
                     comments = comments_per_line.get(line_n, [])
-                    comments.append(f'{code} : {text}')
+                    comments.append(f'Line:{line_n}:{offset} -> {code} {text}')
                     comments_per_line[line_n] = comments
             for line_n, comments in comments_per_line.items():
                 comment = '\n'.join(comments)
