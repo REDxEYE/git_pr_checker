@@ -23,9 +23,7 @@ def _changed_in_diff(diff: PatchedFile, line_n: int):
         hunk: Hunk
         for line_change in hunk:
             line_change: Line
-            if (line_change.is_added and
-                line_change.target_line_no == line_n) \
-                    or line_change.is_context:
+            if line_change.is_added and line_change.target_line_no == line_n:
                 return True
     return False
 
@@ -42,10 +40,13 @@ def _comment_on_line(user, repo, commit_sha, line_n, filename, message):
         GIT_COMMENT_URL.format(owner=user, repo=repo, commit_sha=commit_sha),
         headers=header, json={
             "body": message,
-            "path": filename
+            "path": filename,
+            "position": line_n,
         })
-    app.logger.info('Writing comment on git commit (%s)', commit_sha)
-    app.logger.info(str(res.json()))
+    app.logger.info('Writing comment on git commit (%s) file: (%s)',
+                    commit_sha,
+                    filename)
+    # app.logger.info(str(res.json()))
     assert res.status_code == 201
 
 
@@ -72,8 +73,8 @@ def git_hook():
                 if _changed_in_diff(_get_file_by_name(patch_set.modified_files,
                                                       file['filename']),
                                     line_n):
-                    print(f'{checker.filename}:{line_n}'
-                          f' {code} : {text}')
+                    # print(f'{checker.filename}:{line_n}'
+                    #       f' {code} : {text}')
                     comments = comments_per_line.get(line_n, [])
                     comments.append(f'Line:{line_n}:{offset} -> {code} {text}')
                     comments_per_line[line_n] = comments
