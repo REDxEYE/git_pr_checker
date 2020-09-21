@@ -45,6 +45,8 @@ def _comment_on_line(user, repo, commit_sha, line_n, filename, message):
             "path": filename,
             "position": line_n
         })
+    app.logger.info('Writing comment on git commit (%s)', commit_sha)
+    app.logger.info(str(res.json()))
     assert res.status_code == 201
 
 
