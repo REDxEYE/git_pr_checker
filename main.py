@@ -40,7 +40,7 @@ def _get_file_by_name(mod_files: List[PatchedFile], filename: str):
 def _comment_on_line(user, repo, commit_sha, line_n, filename, message):
     res = post(
         GIT_COMMENT_URL.format(owner=user, repo=repo, commit_sha=commit_sha),
-        headers=header, data={
+        headers=header, json={
             "body": message,
             "path": filename,
             "position": line_n
