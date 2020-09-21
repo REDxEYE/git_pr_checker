@@ -31,7 +31,7 @@ def handle_push(push_data: dict):
         warning_count = checker.check_all()
         comments_per_line = {}
         for line_n, offset, code, text, doc in checker.report._deferred_print:
-            if _changed_in_diff(_get_file_by_name(patch_set.modified_files,
+            if _changed_in_diff(_get_file_by_name(patch_set,
                                                   file['filename']),
                                 line_n):
                 # print(f'{checker.filename}:{line_n}'
