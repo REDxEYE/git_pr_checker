@@ -7,7 +7,7 @@ app.notifications = {}
 
 @app.route('/git_hook', methods=['POST'])
 def git_hook():
-    pass
+    return 'ok'
 
 
 @app.route('/health', methods=['GET'])
@@ -16,4 +16,4 @@ def health():
 
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port='6001')
+    app.run(host='0.0.0.0', port='8080')
