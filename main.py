@@ -21,7 +21,7 @@ app = Flask(__name__)
 def handle_push(push_data: dict):
     repo_info = push_data['repository']
     results = check_commit(push_data['after'],
-                           repo_info['owner']['name'],
+                           repo_info['owner']['login'],
                            repo_info['name'],
                            )
     for file_name, comments_per_line in results.items():
@@ -32,7 +32,7 @@ def handle_push(push_data: dict):
                 push_data['after'],
                 file_name,
                 line_n)
-            _comment_on_line(repo_info['owner']['name'],
+            _comment_on_line(repo_info['owner']['login'],
                              repo_info['name'],
                              push_data['after'],
                              line_n,
@@ -78,7 +78,7 @@ def check_commit(commit_sha, owner, repo, parent_sha=None):
 
 
 def handle_pull_request(hook_data):
-    owner = hook_data['repository']['owner']['name']
+    owner = hook_data['repository']['owner']['login']
     repo = hook_data['repository']['name']
     pr_info = hook_data['pull_request']
     app.logger.info("Checking %s commit against %s commit",
