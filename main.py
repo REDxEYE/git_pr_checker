@@ -70,6 +70,4 @@ def health():
 
 
 if __name__ == '__main__':
-    with open('tmp.json', 'r') as f:
-        handle_push(json.load(f))
-    # app.run(host='0.0.0.0', port='9090')
+    app.run(host='0.0.0.0', port='9090')
