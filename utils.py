@@ -2,11 +2,12 @@ import os
 from typing import List
 
 from requests.api import post
+from requests.auth import HTTPBasicAuth
 from unidiff import PatchedFile, Hunk
 from unidiff.patch import Line
 
 GIT_COMMENT_URL = 'https://api.github.com/repos/{owner}/{repo}/commits/{commit_sha}/comments'
-auth = (os.environ.get("GITUSERNAME", "ERROR"),
+auth = HTTPBasicAuth(os.environ.get("GITUSERNAME", "ERROR"),
         os.environ.get("GITAPIKEY", "ERROR"))
 
 

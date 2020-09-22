@@ -1,3 +1,4 @@
+import json
 import os
 
 import pycodestyle
@@ -9,19 +10,18 @@ from unidiff import PatchSet
 from flask import Flask, request
 from requests import get
 
-from utils import _changed_in_diff, _get_file_by_name, _comment_on_line,auth
+from utils import _changed_in_diff, _get_file_by_name, _comment_on_line, auth
 
 app = Flask(__name__)
-
-
 
 
 def handle_push(push_data: dict):
     repo_info = push_data['repository']
     diff_url = repo_info['compare_url'].format(base=push_data['before'],
                                                head=push_data['after'])
-    diff_info = get(diff_url,auth=auth).json()
-    diff_content = get(diff_info['diff_url'],auth=auth).content.decode('utf8')
+    diff_info = get(diff_url, auth=auth).json()
+    diff_content = get(diff_url, auth=auth, headers={
+        "Accept": "application/vnd.github.v3.diff"}).content.decode('utf8')
     patch_set = PatchSet(diff_content)
     for file in diff_info['files']:
         raw_content = get(file['raw_url']).content.decode('utf8')
@@ -70,4 +70,6 @@ def health():
 
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port='9090')
+    with open('tmp.json', 'r') as f:
+        handle_push(json.load(f))
+    # app.run(host='0.0.0.0', port='9090')
