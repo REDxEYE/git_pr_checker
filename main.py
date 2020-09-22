@@ -24,7 +24,8 @@ def handle_push(push_data: dict):
         "Accept": "application/vnd.github.v3.diff"}).content.decode('utf8')
     patch_set = PatchSet(diff_content)
     for file in diff_info['files']:
-        raw_content = get(file['raw_url']).content.decode('utf8')
+        content = get(file['contents_url'],auth=auth).json()
+        raw_content = get(content['download_url']).content.decode('utf8')
         checker = pycodestyle.Checker(
             filename=file['filename'],
             lines=StringIO(raw_content).readlines()
@@ -70,4 +71,6 @@ def health():
 
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port='9090')
+    with open('tmp.json', 'r') as f:
+        handle_push(json.load(f))
+    # app.run(host='0.0.0.0', port='9090')
