@@ -6,7 +6,8 @@ from unidiff import PatchedFile, Hunk
 from unidiff.patch import Line
 
 GIT_COMMENT_URL = 'https://api.github.com/repos/{owner}/{repo}/commits/{commit_sha}/comments'
-header = {"Authorization": f'Bearer {os.environ.get("GITAPIKEY", "ERROR")}'}
+auth = (os.environ.get("GITUSERNAME", "ERROR"),
+        os.environ.get("GITAPIKEY", "ERROR"))
 
 
 def _changed_in_diff(diff: PatchedFile, line_n: int):
@@ -32,7 +33,7 @@ def _comment_on_line(user, repo, commit_sha, line_n, filename, message):
     """Posts commit comment on specified commit and line"""
     res = post(
         GIT_COMMENT_URL.format(owner=user, repo=repo, commit_sha=commit_sha),
-        headers=header, json={
+        auth=auth, json={
             "body": message,
             "path": filename,
             "position": line_n,

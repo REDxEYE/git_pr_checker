@@ -9,18 +9,19 @@ from unidiff import PatchSet
 from flask import Flask, request
 from requests import get
 
-from utils import _changed_in_diff, _get_file_by_name, _comment_on_line
+from utils import _changed_in_diff, _get_file_by_name, _comment_on_line,auth
 
 app = Flask(__name__)
-app.notifications = {}
+
+
 
 
 def handle_push(push_data: dict):
     repo_info = push_data['repository']
     diff_url = repo_info['compare_url'].format(base=push_data['before'],
                                                head=push_data['after'])
-    diff_info = get(diff_url).json()
-    diff_content = get(diff_info['diff_url']).content.decode('utf8')
+    diff_info = get(diff_url,auth=auth).json()
+    diff_content = get(diff_info['diff_url'],auth=auth).content.decode('utf8')
     patch_set = PatchSet(diff_content)
     for file in diff_info['files']:
         raw_content = get(file['raw_url']).content.decode('utf8')
