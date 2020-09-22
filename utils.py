@@ -6,7 +6,7 @@ from requests.auth import HTTPBasicAuth
 from unidiff import PatchedFile, Hunk
 from unidiff.patch import Line
 
-host = os.environ.get("GITHOTST_API", "api.github.com")
+host = os.environ.get("GITHOST_API", "api.github.com")
 
 GIT_COMMENT_URL = 'https://{host}/repos/{owner}/{repo}/commits/{commit_sha}/comments'
 auth = HTTPBasicAuth(os.environ.get("GITUSERNAME", "ERROR"),
