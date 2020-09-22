@@ -6,9 +6,10 @@ from requests.auth import HTTPBasicAuth
 from unidiff import PatchedFile, Hunk
 from unidiff.patch import Line
 
+from api import GIT_COMMENT_URL
+
 host = os.environ.get("GITHOST_API", "api.github.com")
 
-GIT_COMMENT_URL = 'https://{host}/repos/{owner}/{repo}/commits/{commit_sha}/comments'
 auth = HTTPBasicAuth(os.environ.get("GITUSERNAME", "ERROR"),
                      os.environ.get("GITAPIKEY", "ERROR"))
 
@@ -35,7 +36,8 @@ def _get_file_by_name(mod_files: List[PatchedFile], filename: str):
 def _comment_on_line(user, repo, commit_sha, line_n, filename, message):
     """Posts commit comment on specified commit and line"""
     res = post(
-        GIT_COMMENT_URL.format(host=host,owner=user, repo=repo, commit_sha=commit_sha),
+        GIT_COMMENT_URL.format(host=host, owner=user, repo=repo,
+                               commit_sha=commit_sha),
         auth=auth, json={
             "body": message,
             "path": filename,
