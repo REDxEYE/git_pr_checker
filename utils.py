@@ -38,5 +38,5 @@ def _comment_on_line(user, repo, commit_sha, line_n, filename, message):
             "position": line_n,
         })
 
-    # app.logger.info(str(res.json()))
-    assert res.status_code == 201
+    assert res.status_code == 201, f'Got non 201 status, ' \
+                                   f'error message: {res.content}'
