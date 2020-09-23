@@ -80,9 +80,10 @@ def handle_pull_request(hook_data):
 
 @app.route('/git_hook', methods=['POST'])
 def git_hook():
-    msg_hash = "sha1=" + hmac.new(unhexlify(secret),
+    msg_hash = "sha1=" + hmac.new(secret.encode('latin-1'),
                                   request.get_data(),
                                   hashlib.sha1).hexdigest().lower()
+    app.logger.critical(f"Calculated sha1:{msg_hash}")
     if msg_hash != request.headers['X-Hub-Signature']:
         return abort(403)
     hook_data = request.get_json()
