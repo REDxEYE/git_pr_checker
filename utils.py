@@ -8,13 +8,18 @@ from unidiff.patch import Line
 
 from api import GIT_COMMENT_URL
 
-host = os.environ.get("GITHOST_API", "api.github.com")
+host_api = os.environ.get("GITHOST_API", "api.github.com")
+host = os.environ.get("GITHOST", "github.com")
 
 auth = HTTPBasicAuth(os.environ.get("GITUSERNAME", "ERROR"),
                      os.environ.get("GITAPIKEY", "ERROR"))
 
 
-def _changed_in_diff(diff: PatchedFile, line_n: int):
+def format_comment(filename, line_n, offset, code, text):
+    return f'{code}: {text}'
+
+
+def changed_in_diff(diff: PatchedFile, line_n: int):
     """Returns True if line were changed in passed diff parameter"""
     for hunk in diff:
         hunk: Hunk
@@ -25,7 +30,7 @@ def _changed_in_diff(diff: PatchedFile, line_n: int):
     return False
 
 
-def _get_file_by_name(mod_files: List[PatchedFile], filename: str):
+def get_file_by_name(mod_files: List[PatchedFile], filename: str):
     """Finds PatchedFile object in list of PathedFile`s by name"""
     for mod in mod_files:
         if mod.path == filename:
@@ -33,10 +38,10 @@ def _get_file_by_name(mod_files: List[PatchedFile], filename: str):
     return None
 
 
-def _comment_on_line(user, repo, commit_sha, line_n, filename, message):
+def post_comment_on_line(user, repo, commit_sha, line_n, filename, message):
     """Posts commit comment on specified commit and line"""
     res = post(
-        GIT_COMMENT_URL.format(host=host, owner=user, repo=repo,
+        GIT_COMMENT_URL.format(host=host_api, owner=user, repo=repo,
                                commit_sha=commit_sha),
         auth=auth, json={
             "body": message,
