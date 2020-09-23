@@ -132,9 +132,9 @@ def handle_pull_request(hook_data):
 
 @app.route('/git_hook', methods=['POST'])
 def git_hook():
-    app.logger.critical("")
     hook_data = request.get_json()
     hook_type = request.headers['X-GitHub-Event']
+    app.logger.critical(f"Request from GIT: {hook_type}")
     if hook_type == 'push':
         # Push handler
         handle_push(hook_data)
