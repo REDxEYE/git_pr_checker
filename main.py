@@ -47,10 +47,13 @@ def handle_push(push_data: dict):
 
 def check_commit(commit_sha, owner, repo, parent_sha=None):
     if parent_sha is None:
-        commit_info = get(GIT_COMMIT_URL.format(sha=commit_sha,
-                                                owner=owner,
-                                                repo=repo,
-                                                host=host_api)).json()
+        link = GIT_COMMIT_URL.format(sha=commit_sha,
+                                     owner=owner,
+                                     repo=repo,
+                                     host=host_api)
+        commit_info_req = get(link)
+        app.logger.critical(f'GET {link}:{commit_info_req.status_code}')
+        commit_info = commit_info_req.json()
         parent_sha = commit_info['parents'][0]['sha']
     diff_url = GIT_COMPARE_URL.format(base=parent_sha,
                                       head=commit_sha,
@@ -151,6 +154,6 @@ def health():
 
 
 if __name__ == '__main__':
-    # with open('sync_pr.json', 'r') as f:
-    #     handle_pull_request(json.load(f))
-    app.run(host='0.0.0.0', port='9090')
+    with open('sync_pr.json', 'r') as f:
+        handle_pull_request(json.load(f))
+    # app.run(host='0.0.0.0', port='9090')
