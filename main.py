@@ -142,8 +142,11 @@ def git_hook():
         # Push handler
         handle_push(hook_data)
     elif hook_type == 'pull_request':
+        pr_action = hook_data['action']
         # Pull request handler
-        handle_pull_request(hook_data)
+        if pr_action in ['opened', 'synchronize']:
+            # React only to open or new commits
+            handle_pull_request(hook_data)
 
     return 'ok'
 
@@ -155,6 +158,6 @@ def health():
 
 if __name__ == '__main__':
     # with open('tmp.json', 'r') as f:
-        # handle_pull_request(json.load(f))
-        # handle_push(json.load(f))
+    #     handle_pull_request(json.load(f))
+    #     handle_push(json.load(f))
     app.run(host='0.0.0.0', port='9090')
