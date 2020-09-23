@@ -1,14 +1,16 @@
+import hashlib
 import json
 import logging
 from logging import Logger
+import hmac
 
-from flask import Flask, request
+from flask import Flask, request, abort
 from requests import get, post
 
 from api import GIT_FILE_REF
 
 from utils import (post_comment_on_line, auth, host_api, host,
-                   format_comment, flake8_scan_file, post_pr_review)
+                   format_comment, flake8_scan_file, post_pr_review, secret)
 
 app = Flask(__name__)
 app.logger.setLevel(logging.INFO)
@@ -77,6 +79,11 @@ def handle_pull_request(hook_data):
 
 @app.route('/git_hook', methods=['POST'])
 def git_hook():
+    msg_hash = "sha1=" + hmac.new(secret,
+                                  request.get_data(),
+                                  hashlib.sha1).hexdigest().lower()
+    if msg_hash != request.headers['X-Hub-Signature']:
+        return abort(403)
     hook_data = request.get_json()
     hook_type = request.headers['X-GitHub-Event']
     app.logger.critical(f"Request from GIT: {hook_type}")

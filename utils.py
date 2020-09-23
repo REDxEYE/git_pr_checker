@@ -14,7 +14,7 @@ from api import GIT_COMMENT_URL, GIT_COMMIT_URL, GIT_COMPARE_URL, \
 
 host_api = os.environ.get("GITHOST_API", "api.github.com")
 host = os.environ.get("GITHOST", "github.com")
-
+secret = os.environ.get("GITSECRET", "Nope")
 auth = HTTPBasicAuth(os.environ.get("GITUSERNAME", "ERROR"),
                      os.environ.get("GITAPIKEY", "ERROR"))
 
