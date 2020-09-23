@@ -32,7 +32,7 @@ def handle_push(push_data: dict):
             comment = ""
             for comment in comments_data:
                 comment += f'\nLine:{comment[1]} -> ' \
-                           f'{format_comment(*comments_data)}'
+                           f'{format_comment(*comment)}'
             app.logger.info(
                 'Writing comment on git commit (%s) %s:%i',
                 push_data['after'],
