@@ -134,12 +134,11 @@ def handle_pull_request(hook_data):
 def git_hook():
     app.logger.critical("")
     hook_data = request.get_json()
-    if 'pusher' in hook_data and \
-            request.headers['X-GitHub-Event'] == 'push':
+    hook_type = request.headers['X-GitHub-Event']
+    if hook_type == 'push':
         # Push handler
         handle_push(hook_data)
-    elif 'pull_request' in hook_data and \
-            request.headers['X-GitHub-Event'] == 'pull_request':
+    elif hook_type == 'pull_request':
         # Pull request handler
         handle_pull_request(hook_data)
 
@@ -152,6 +151,6 @@ def health():
 
 
 if __name__ == '__main__':
-    with open('sync_pr.json', 'r') as f:
-        handle_pull_request(json.load(f))
-    # app.run(host='0.0.0.0', port='9090')
+    # with open('sync_pr.json', 'r') as f:
+    #     handle_pull_request(json.load(f))
+    app.run(host='0.0.0.0', port='9090')
