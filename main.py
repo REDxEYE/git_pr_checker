@@ -1,6 +1,7 @@
 import hashlib
 import json
 import logging
+from binascii import unhexlify
 from logging import Logger
 import hmac
 
@@ -79,8 +80,8 @@ def handle_pull_request(hook_data):
 
 @app.route('/git_hook', methods=['POST'])
 def git_hook():
-    msg_hash = "sha1=" + hmac.new(secret,
-                                  request.get_data(),
+    msg_hash = "sha1=" + hmac.new(unhexlify(secret),
+                                  request.get_data().encode('utf8'),
                                   hashlib.sha1).hexdigest().lower()
     if msg_hash != request.headers['X-Hub-Signature']:
         return abort(403)
