@@ -30,9 +30,9 @@ def handle_push(push_data: dict):
     for file_name, comments_per_line in results.items():
         for line_n, comments_data in comments_per_line.items():
             comment = ""
-            for comment in comments_data:
+            for comment_data in comments_data:
                 comment += f'\nLine:{comment[1]} -> ' \
-                           f'{format_comment(*comment)}'
+                           f'{format_comment(*comment_data)}'
             app.logger.info(
                 'Writing comment on git commit (%s) %s:%i',
                 push_data['after'],
@@ -155,6 +155,7 @@ def health():
 
 
 if __name__ == '__main__':
-    # with open('sync_pr.json', 'r') as f:
-    #     handle_pull_request(json.load(f))
-    app.run(host='0.0.0.0', port='9090')
+    with open('tmp.json', 'r') as f:
+        # handle_pull_request(json.load(f))
+        handle_push(json.load(f))
+    # app.run(host='0.0.0.0', port='9090')
